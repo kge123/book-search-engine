@@ -5,7 +5,7 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
     Query: {
       user: async (parent, { username }) => {
-        return User.findOne({ username }).populate('');
+        return User.findOne({ username }).populate('savedBooks');
       }
     },
 
@@ -32,35 +32,35 @@ const resolvers = {
       
             return { token, user };
           },
-          saveBook: async (parent, { thoughtText }, context) => {
+          saveBook: async (parent, { bookId }, context) => {
             if (context.user) {
-              const thought = await Thought.create({
-                thoughtText,
-                thoughtAuthor: context.user.username,
+              const book = await Book.create({
+                description,
+                title: context.user.bookId,
               });
       
               await User.findOneAndUpdate(
                 { _id: context.user._id },
-                { $addToSet: { thoughts: thought._id } }
+                { $addToSet: { savedBooks: bookId } }
               );
       
-              return thought;
+              return book;
             }
             throw new AuthenticationError('You need to be logged in!');
           },
-          deleteBook: async (parent, { thoughtId }, context) => {
+          deleteBook: async (parent, { bookId }, context) => {
             if (context.user) {
-              const thought = await Thought.findOneAndDelete({
+              const book = await Book.findOneAndDelete({
                 _id: thoughtId,
                 thoughtAuthor: context.user.username,
               });
       
               await User.findOneAndUpdate(
                 { _id: context.user._id },
-                { $pull: { thoughts: thought._id } }
+                { $pull: { savedBooks: bookId } }
               );
       
-              return thought;
+              return book;
             }
             throw new AuthenticationError('You need to be logged in!');
           }
