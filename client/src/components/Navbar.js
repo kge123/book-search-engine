@@ -35,7 +35,7 @@ const AppNavbar = () => {
                 <Nav.Link onClick={() => setShowModal(true)}>Login/Sign Up</Nav.Link>
               )}
             </Nav>
-          </Navbar.Collapse>
+          </Navbar.Collapse>  
         </Container>
       </Navbar>
       {/* set modal data up */}
